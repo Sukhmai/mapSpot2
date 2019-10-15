@@ -11,7 +11,7 @@ var curZoom = 1
 var curCenter = [1, 1]
 var curGeoCoords, curActiveRectangle, curEndCenters
     //City Coordinates
-    //     // Atlanta: 
+    //     // Atlanta:
     // var ATLleftCenter = { lng: -84.3880, lat: 33.7490 }
     // var ATLrightCenter = { lng: -82.3880, lat: 33.7490 }
     // NOLA
@@ -47,7 +47,7 @@ var map = new mapboxgl.Map({
     style: 'mapbox://styles/atlmaproom/cjkbg9s6m8njm2roxkx8gprzj', // style from online MapBox GL Studio
     zoom: 12,
     bearing: 0, // refers to rotation angle
-    // Atlanta: 
+    // Atlanta:
     // center: [-84.3951, 33.7634],
     // New Orleans
     center: [-90.0715, 29.9511],
@@ -221,7 +221,8 @@ socket.on('pushSensorUpdate', function(data) {
     projLat = leftCenter.lat + (projRatio * (rightCenter.lat - leftCenter.lat))
     projLong = leftCenter.lng + (projRatio * (rightCenter.lng - leftCenter.lng))
 
-    map.easeTo({ center: { lng: projLong, lat: projLat }, zoom: (curZoom + zoomAdd), bearing: curBearing, duration: 1000 })
+    //This line was causing unintended behavior, causing the map to not be able to zoom in
+    // map.easeTo({ center: { lng: projLong, lat: projLat }, zoom: (curZoom + zoomAdd), bearing: curBearing, duration: 1000 })
 });
 
 function dropDownSelect() {
@@ -251,7 +252,7 @@ function dropDownSelect() {
             speed: 2.5
         });
     }
-    console.log(map.center);
+    console.log(map.zoom);
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
 /*  Lock the map.                                                                                                   */
@@ -263,7 +264,7 @@ function dropDownSelect() {
 //document.getElementById('interactionButton').addEventListener('click', function() {
 function lockMap() {
     //console.log(isLocked);
-    // lock the map 
+    // lock the map
     if (!isLocked) {
         map.boxZoom.disable();
         map.scrollZoom.disable();
@@ -278,7 +279,7 @@ function lockMap() {
 
     }
 
-    // unlock the map 
+    // unlock the map
     else {
         //console.log("in true" + isLocked);
 
