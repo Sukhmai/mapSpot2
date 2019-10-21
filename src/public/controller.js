@@ -430,6 +430,24 @@ map.on('load', function() {
             'fill-opacity': 0.6
         }
     });
+  //Testing adding an image
+  //We can add images in the same way we add layers, we just need a way to programmatically add layers/images
+//   map.addSource('test_image', {
+//    type: 'image',
+//    url: 'https://docs.mapbox.com/mapbox-gl-js/assets/radar.gif',
+//    coordinates: [
+//     [-80.425, 46.437],
+//     [-71.516, 46.437],
+//     [-71.516, 37.936],
+//     [-80.425, 37.936]
+//   ]
+// });
+//   map.addLayer({
+//     id: 'test_image',
+//     type: 'raster',
+//     source: 'test_image',
+//     paint: {"raster-opacity": 0.85}
+//   })
     /* HERE IS WHERE YOU ADD A NEW DATA LAYER
      map.addSource('_______________', {
         type: 'vector',

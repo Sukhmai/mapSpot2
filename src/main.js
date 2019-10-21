@@ -10,7 +10,7 @@ var io = require('socket.io').listen(server);
 // Main server runs on this port, will be used by other scripts
 server.listen(8080);
 
-app.use(express.static('html'))
+app.use(express.static('public'))
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -18,13 +18,15 @@ app.use(bodyParser.json());
 
 /** The following methods provide GET functionality for
  *** the server, simplifying file locations for other scripts. */
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/html/index.html');
-});
-app.get('/controller.js', function(req, res) {
-    res.sendFile(__dirname + '/controller.js');
-});
 
+//This is the default page, which holds the map
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
+//This is the page for people to upload their own custom maps
+app.get('/upload', function(req, res) {
+  res.sendFile(__dirname + '/public/upload.html')
+})
 /**
  * Handles logic for all incoming socket events, when
  * connection is received from projector and controller.
