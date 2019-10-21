@@ -196,7 +196,7 @@ map.on('moveend', function(e) {
         'zoom': map.getZoom(),
         'bearing': map.getBearing(),
         'geoCoordinates': getGeoCoordinates(),
-        'activeRectangle': activeRectangle.id,
+        // 'activeRectangle': activeRectangle.id,
         'endCenters': getEndCenters()
     })
 });

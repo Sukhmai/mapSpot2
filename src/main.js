@@ -10,6 +10,7 @@ var io = require('socket.io').listen(server);
 // Main server runs on this port, will be used by other scripts
 server.listen(8080);
 
+app.use(express.static('html'))
 app.use(bodyParser.urlencoded({
     extended: true
 }));
