@@ -6,6 +6,7 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+require('dotenv').config();
 
 // Main server runs on this port, will be used by other scripts
 server.listen(8080);
@@ -25,7 +26,12 @@ app.get('/', function(req, res) {
 });
 //This is the page for people to upload their own custom maps
 app.get('/upload', function(req, res) {
-  res.sendFile(__dirname + '/public/upload.html')
+  res.sendFile(__dirname + '/public/upload.html');
+})
+
+app.post('/uploadFile', function(req, res) {
+  var file = req.body.file;
+  console.log(file);
 })
 /**
  * Handles logic for all incoming socket events, when
