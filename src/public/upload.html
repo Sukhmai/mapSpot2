@@ -7,12 +7,28 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="upload.css">
+    <center>
+      <h2> This is a place to upload a Custom Map to the Atlanta Map Room </h2>
+    </center>
 </head>
 
 <body>
   <center>
-    This is a place to upload a Custom Map to the Atlanta Map Room. <br>
-    <input type="file" id="input" onchange="handleFiles(this.files)">
+    <form id="uploadForm">
+      <p>
+        <label for="fileInput"> Upload File: </label>
+        <input type="file" id="fileInput" onchange="handleFiles(this.files)">
+      </p>
+      <p>
+        <label for="password"> Password: </label>
+        <input type="password" id="passwordBox" onchange="handlePassword(event)">
+      </p>
+      <p>
+        <label for="tilesetName"> Name: </label>
+        <input id="tilesetName" onchange="handleTilesetName(event)">
+      </p>
+      <button type="submit" id="submitButton"> Submit </button>
+    </form>
   </center>
   <script type="text/javascript" src="upload.js"> </script>
 </body>

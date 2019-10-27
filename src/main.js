@@ -7,6 +7,9 @@ var bodyParser = require('body-parser');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 require('dotenv').config();
+const mbxUpload = require('@mapbox/mapbox-sdk/services/uploads');
+const uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
+const AWS = require('aws-sdk');
 
 // Main server runs on this port, will be used by other scripts
 server.listen(8080);
@@ -29,9 +32,49 @@ app.get('/upload', function(req, res) {
   res.sendFile(__dirname + '/public/upload.html');
 })
 
+//This is the post request to upload a file to mapbox
+//Reference Mapbox JS SDK on uploads
 app.post('/uploadFile', function(req, res) {
-  var file = req.body.file;
-  console.log(file);
+  let file = req.body.file;
+  let password = req.body.password;
+  let tilesetName = req.body.tilesetName;
+  let username = "atlmaproom";
+
+  if (password === process.env.password) {
+    let mbxCredentials = null;
+
+    //Function to get the AWS credentials from Mapbox
+    const getCredentials = () => {
+      return uploadsClient.createUploadCredentials().send().then(response => response.body);
+    }
+
+    //Function to load file onto AWS
+    const putFileOnS3 = (credentials) => {
+      const s3 = new AWS.S3({
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
+        sessionToken: credentials.sessionToken,
+        region: 'us-east-1'
+      });
+      return s3.putObject({
+        Bucket: credentials.bucket,
+        Key: credentials.key,
+        Body: "hi"
+      }).promise();
+    };
+
+    //This function syncs the functions in order
+    async function upload() {
+      credentials = await getCredentials();
+      await putFileOnS3(credentials);
+      uploadsClient.createUpload({
+        mapId: `${username}.${tilesetName}`,
+        url: credentials.url
+      });
+    }
+
+    upload();
+  }
 })
 /**
  * Handles logic for all incoming socket events, when
