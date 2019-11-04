@@ -24,13 +24,14 @@ function handleTilesetName(evt) {
 
 function submit() {
   if (file != null && password != null && tilesetName != null) {
-    var xhr = new XMLHttpRequest();
+    let formData = new FormData();
+    formData.append("password", password);
+    formData.append("tilesetName", tilesetName);
+    formData.append("datafile", file[0]);
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", '/uploadFile', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-      file: file,
-      password: password,
-      tilesetName: tilesetName
-    }));
+    // xhr.setRequestHeader("Content-Type", "multipart/form-data")
+    console.log(...formData);
+    xhr.send(formData);
   }
 }

@@ -4,8 +4,11 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var upload = multer();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+
 require('dotenv').config();
 const mbxUpload = require('@mapbox/mapbox-sdk/services/uploads');
 const uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
@@ -34,8 +37,8 @@ app.get('/upload', function(req, res) {
 
 //This is the post request to upload a file to mapbox
 //Reference Mapbox JS SDK on uploads
-app.post('/uploadFile', function(req, res) {
-  let file = req.body.file;
+app.post('/uploadFile', upload.single('datafile'), function(req, res) {
+  let file = req.file;
   let password = req.body.password;
   let tilesetName = req.body.tilesetName;
   let username = "atlmaproom";
@@ -50,17 +53,17 @@ app.post('/uploadFile', function(req, res) {
 
     //Function to load file onto AWS
     const putFileOnS3 = (credentials) => {
-      const s3 = new AWS.S3({
-        accessKeyId: credentials.accessKeyId,
-        secretAccessKey: credentials.secretAccessKey,
-        sessionToken: credentials.sessionToken,
-        region: 'us-east-1'
-      });
-      return s3.putObject({
-        Bucket: credentials.bucket,
-        Key: credentials.key,
-        Body: "hi"
-      }).promise();
+        const s3 = new AWS.S3({
+          accessKeyId: credentials.accessKeyId,
+          secretAccessKey: credentials.secretAccessKey,
+          sessionToken: credentials.sessionToken,
+          region: 'us-east-1'
+        });
+        return s3.putObject({
+          Bucket: credentials.bucket,
+          Key: credentials.key,
+          Body: file.buffer
+        }).promise();
     };
 
     //This function syncs the functions in order
@@ -69,8 +72,11 @@ app.post('/uploadFile', function(req, res) {
       await putFileOnS3(credentials);
       uploadsClient.createUpload({
         mapId: `${username}.${tilesetName}`,
-        url: credentials.url
-      });
+        url: credentials.url,
+        tilesetName: `${tilesetName}`
+      }).send().then(response => {
+          const upload = response.body;
+        }).catch(err => console.log('error:', err));;
     }
 
     upload();
