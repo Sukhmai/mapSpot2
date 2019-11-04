@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: #444444;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: sans-serif;
+}
+
+h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+input[type=text],
+input[type=password] {
+  float: right;
+}
+
+button {
+  padding: 0.5rem 1rem;
+}
+
+.uploadFormLine {
+  display: block;
+  margin: 1rem 0;
+}
+
+.uploadFormLine:last-child {
+  text-align: center;
+  margin-bottom: 0;
+}
+
+#container {
+  border-style: none;
+  border-radius: 0.5rem;
+
+  padding: 2rem;
+
+  background-color: white;
+  box-shadow: 0 10px 20px 5px #00000033;
+
+  color: #333333;
+}

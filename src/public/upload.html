@@ -7,29 +7,35 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="upload.css">
-    <center>
-      <h2> This is a place to upload a Custom Map to the Atlanta Map Room </h2>
-    </center>
+
+<link href="https://fonts.googleapis.com/css?family=Liu+Jian+Mao+Cao&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
-  <center>
+  <div id="container">
+    <h2>MapRoom File Upload</h2>
     <form id="uploadForm">
-      <p>
-        <label for="fileInput"> Upload File: </label>
+      <div class="uploadFormLine">
+        <label for="tilesetName">Filename:</label>
+        <input id="tilesetName" type="text" onchange="handleTilesetName(event)">
+      </div>
+
+      <div class="uploadFormLine">
+        <label for="fileInput"></label>
         <input type="file" id="fileInput" onchange="handleFiles(this.files)">
-      </p>
-      <p>
-        <label for="password"> Password: </label>
+      </div>
+
+      <div class="uploadFormLine">
+        <label for="password">Upload Key:</label>
         <input type="password" id="passwordBox" onchange="handlePassword(event)">
-      </p>
-      <p>
-        <label for="tilesetName"> Name: </label>
-        <input id="tilesetName" onchange="handleTilesetName(event)">
-      </p>
-      <button type="submit" id="submitButton"> Submit </button>
+      </div>
+
+      <div class="uploadFormLine">
+        <button type="submit" id="submitButton">Submit</button>
+      </div>
     </form>
-  </center>
+  </div>
   <script type="text/javascript" src="upload.js"> </script>
 </body>
 
