@@ -1,20 +1,21 @@
+
 # The Map Spot
 
 To document and reflect upon the connections and disjunctions between civic data and lived experience, through the collaborative creation of large-scale, interpretive maps.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
 
 ### Installing
 
-After cloning the repository, ensure that node and npm are installed on your machine. Change directory into the main folder and run command `npm install` to install dependencies.
+After cloning the repository, ensure that [node](https://nodejs.org/en/) and npm are installed on your machine. Change directory into the main folder and run command `npm install` to install dependencies. Then create an .env file, and fill in the uploadKey and password fields. If you don't have these keys, you can still test and develop the map, however the upload portal will not work.
 
 ### Starting the Server
 
 Navigate to the main directory and then move down one level to the /src folder. Run `node main.js` to start the server, which will listen on the port specified within the files (by default, port 8080).
 
-Once the server is running, you should be able to navigate to the page in a web browser (http://localhost:8080) in order to view the index.html page, which shows links to the Controller, Projector, and Table pages. These three pages can be opened as separate tabs or windows in order to test the system.
+Once the server is running, you should be able to navigate to the page in a web browser (http://localhost:8080) in order to view the index.html page, which shows the interactive map. Navigate to (http://localhost:8080/upload to see the upload portal. ) 
 
 ## Built With
 
@@ -22,13 +23,13 @@ Once the server is running, you should be able to navigate to the page in a web 
 * [Node.js](https://nodejs.org/en/) - JavaScript runtime
 
 ## Authors
+### MapSpot
+* **Sukhmai Kapur** - *MapSpot* - [Sukhmai](https://github.com/Sukhmai)
 * **Raya Ward** - *Map Spot* - [rayaward](https://github.com/rayaward)
-
+### Original Project 
 * **Muniba M. Khan** - *Initial work* - [kmuniba98](https://github.com/kmuniba98)
 * **Christopher Polack** - *Initial work* - [cfpolack](https://github.com/cfpolack)
 * **Annabel Rothschild** - *Initial work* - [annabelrothschild](https://github.com/annabelrothschild)
-
-See also the list of [contributors](https://github.com/kmuniba98/Atlanta-Map-Room/contributors) who participated in this project.
 
 ## Acknowledgments
 
