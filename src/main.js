@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var upload = multer();
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
 
 require('dotenv').config();
 const mbxUpload = require('@mapbox/mapbox-sdk/services/uploads');
@@ -81,44 +80,4 @@ app.post('/uploadFile', upload.single('datafile'), function(req, res) {
 
     upload();
   }
-})
-/**
- * Handles logic for all incoming socket events, when
- * connection is received from projector and controller.
- *
- * @listens socket connection
- */
-io.on('connection', function(socket) {
-
-    // Fired when map is updated on controller
-    socket.on('mapUpdate', function(data) {
-        socket.broadcast.emit('pushMapUpdate', data)
-        console.log("Map Updated")
-    });
-
-    // Fired when keyboard keys are used to nudge map on projector
-    socket.on("projNudge", function(data) {
-        console.log(data.direction)
-        socket.broadcast.emit("projNudge", data);
-    });
-
-    // Fired when a layer is hidden on the controller
-    socket.on('hideLayer', function(data) {
-        socket.broadcast.emit('pushHideLayer', data)
-    });
-
-    // Fired when a layer is shown on the controller
-    socket.on('showLayer', function(data) {
-        socket.broadcast.emit('pushShowLayer', data)
-    });
-
-    // Fired when the laser sensor server connects to the socket
-    socket.on('sensorConnected', function(data) {
-        console.log("Sensor server connected");
-    })
-
-    // Fired when a new sensor reading is received from the sensor server
-    socket.on('sensorUpdate', function(data) {
-        socket.broadcast.emit('pushSensorUpdate', data);
-    })
 })

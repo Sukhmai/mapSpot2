@@ -1,8 +1,4 @@
-// Define socket address (Ubuntu server address)
-var socket = io('http://maproom.lmc.gatech.edu:8080/');
-
 // Global Variables
-var activeRectangle = document.getElementById("longRect");
 var rectWidth = 730;
 var rectHeight = 200;
 var leftLong, rightLong, lowerLat, upperLat
@@ -66,82 +62,9 @@ map.on('load', function() {
     map.getCanvas().focus();
     map.getCanvas().addEventListener('keydown', function(e) {
         e.preventDefault();
-        if (e.which === 38) { // Up arrow
-            socket.emit('projNudge', { 'direction': 'up' })
-        } else if (e.which === 40) { // Down arrow
-            socket.emit('projNudge', { 'direction': 'down' })
-        } else if (e.which === 37) { // Left arrow
-            socket.emit('projNudge', { 'direction': 'left' })
-        } else if (e.which === 39) { // Right arrow
-            socket.emit('projNudge', { 'direction': 'right' })
-        } else if (e.which === 68) { // A key
-            socket.emit('projNudge', { 'direction': 'ccw' })
-        } else if (e.which === 65) { // D key
-            socket.emit('projNudge', { 'direction': 'cw' })
-        } else if (e.which === 87) { // W key
-            socket.emit('projNudge', { 'direction': 'zoom_in' })
-        } else if (e.which === 83) { // S key
-            socket.emit('projNudge', { 'direction': 'zoom_out' })
-        }
     }, true);
 });
 
-/*
- * when arrow keys are pressed from the Projector to align the map,
- * Socket emmit sends changes back to be updated on Controller
- */
-socket.on('projNudge', function(data) {
-    direction = data.direction
-    var deltaDistance = 1;
-    var deltaDegrees = 1;
-    var deltaZoom = 0.03
-
-    if (direction === 'up') {
-        map.panBy([0, -deltaDistance]);
-    } else if (direction === 'down') {
-        map.panBy([0, deltaDistance]);
-    } else if (direction === 'left') {
-        map.panBy([-deltaDistance, 0]);
-    } else if (direction === 'right') {
-        map.panBy([deltaDistance, 0]);
-    } else if (direction === 'ccw') {
-        map.easeTo({ bearing: map.getBearing() - deltaDegrees });
-    } else if (direction === 'cw') {
-        map.easeTo({ bearing: map.getBearing() + deltaDegrees });
-    } else if (direction === 'zoom_in') {
-        map.easeTo({ zoom: map.getZoom() + deltaZoom });
-    } else if (direction === 'zoom_out') {
-        map.easeTo({ zoom: map.getZoom() - deltaZoom });
-    }
-});
-
-/** Fires when the controller map is moved. Updates the
- *  current view by using current projector location
- *  calculate the exact position of the projector view
- *  within the rectangle view box.
- */
-socket.on('pushMapUpdate', function(data) {
-    console.log("Controller changed, updating map...");
-
-    curCenter = data['center'];
-    curZoom = data['zoom'];
-    curBearing = data['bearing'];
-    curGeoCoords = data['geoCoordinates'];
-    curActiveRectangle = data['activeRectangle'];
-    curEndCenters = data['endCenters']
-
-    // Extract the leftmost and rightmost centers for the rectangle view
-    leftCenter = curEndCenters.lc
-    rightCenter = curEndCenters.rc
-
-    // Current projector view is calculating as a gradient between the
-    // left and right centers, depending on the projector position from the sensor
-    projLat = leftCenter.lat + (projRatio * (rightCenter.lat - leftCenter.lat))
-    projLong = leftCenter.lng + (projRatio * (rightCenter.lng - leftCenter.lng))
-
-    // Performs the map movement to transition to the new position
-    map.easeTo({ center: { lng: projLong, lat: projLat }, zoom: (curZoom + zoomAdd), bearing: curBearing, duration: 1000 })
-});
 
 function getPixelCoordinates() {
     // get width & height from current rectangle
@@ -185,45 +108,6 @@ function getEndCenters() {
     return { "rc": rc, "lc": lc };
 }
 
-/**
- * when the user interacts with the map (pinch/drag to move, zoom, or rotate)
- * all changes are emitted to the server to update the view in Projector
- */
-map.on('moveend', function(e) {
-    console.log("Sending move change to server...")
-    socket.emit('mapUpdate', {
-        'center': map.getCenter(),
-        'zoom': map.getZoom(),
-        'bearing': map.getBearing(),
-        'geoCoordinates': getGeoCoordinates(),
-        // 'activeRectangle': activeRectangle.id,
-        'endCenters': getEndCenters()
-    })
-});
-
-
-/** Fired when the sensor server publishes a measurement
- *  (happens about twice per second) and moves the projector
- *  view to reflect any change in position.
- */
-socket.on('pushSensorUpdate', function(data) {
-    // These two numbers are VERY important, they define the start
-    // and end measurements between which the projector position is
-    // linearly modeled.
-    var start = 1931
-    var end = 5012
-
-    // Simple fraction of current position over total change
-    projRatio = ((data.distance - start) / (end - start))
-
-    // Calculate map center that aligns projector view with current area of
-    // rectangle within view
-    projLat = leftCenter.lat + (projRatio * (rightCenter.lat - leftCenter.lat))
-    projLong = leftCenter.lng + (projRatio * (rightCenter.lng - leftCenter.lng))
-
-    //This line was causing unintended behavior, causing the map to not be able to zoom in
-    // map.easeTo({ center: { lng: projLong, lat: projLat }, zoom: (curZoom + zoomAdd), bearing: curBearing, duration: 1000 })
-});
 
 function dropDownSelect() {
     selectedCity = document.getElementById('input').value;
@@ -252,7 +136,6 @@ function dropDownSelect() {
             speed: 2.5
         });
     }
-    console.log(map.zoom);
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
 /*  Lock the map.                                                                                                   */
@@ -294,25 +177,6 @@ function lockMap() {
     }
 }
 
-
-/*--------------------------------------------------------------------------------------------------------------------*/
-/*  Toggle map layers                                                                                                 */
-/*--------------------------------------------------------------------------------------------------------------------*/
-/** After receiving a request from the server,
- *  hides the corresponding map layer
- */
-socket.on('pushHideLayer', function(data) {
-    var hiddenLayer = data['clickedLayer'];
-    map.setLayoutProperty(hiddenLayer, 'visibility', 'none');
-});
-
-/** After receiving a request from the server,
- *  shows the corresponding map layer
- */
-socket.on('pushShowLayer', function(data) {
-    var shownLayer = data['clickedLayer'];
-    map.setLayoutProperty(shownLayer, 'visibility', 'visible');
-});
 
 /**
  * adds BeltLine and data layer sources from MapBox GL Studio
@@ -494,9 +358,7 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
         var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
         if (visibility === 'visible') {
             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-            socket.emit('hideLayer', { 'clickedLayer': clickedLayer })
             this.className = '';
-            console.log(this);
         } else {
             // hide all layers
             var activeItem = document.getElementsByClassName('active');
@@ -504,17 +366,10 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
                 activeItem[0].classList.remove('active');
             }
             map.setLayoutProperty('Median Income', 'visibility', 'none');
-            socket.emit('hideLayer', { 'clickedLayer': 'Median Income' })
-
             map.setLayoutProperty('Percent College Educated', 'visibility', 'none');
-            socket.emit('hideLayer', { 'clickedLayer': 'Percent College Educated' })
-
             map.setLayoutProperty('Percent White Occupancy', 'visibility', 'none');
-            socket.emit('hideLayer', { 'clickedLayer': 'Percent White Occupancy' })
-
             this.className = 'active';
             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-            socket.emit('showLayer', { 'clickedLayer': clickedLayer })
                 // createLegend()
         }
     };
@@ -622,7 +477,7 @@ map.on('click', 'Percent White Occupancy', function(e) {
 
     var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
-        .setHTML('<h3>Percent White Occupancy</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 59.7%<br>Louisiana: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 62.6%<br>United States: &nbsp; 72.4%</h6>')
+        .setHTML(`<h3>Percent White Occupancy</h3>` + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 59.7%<br>Louisiana: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 62.6%<br>United States: &nbsp; 72.4%</h6>')
         .addTo(map);
 });
 
