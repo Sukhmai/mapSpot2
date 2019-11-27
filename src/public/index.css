@@ -25,6 +25,7 @@ body {
     text-align: center;
     color: #fff;
     background: #2ECC71;
+    cursor: pointer;
 }
 
 #manual-move {
