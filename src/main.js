@@ -32,7 +32,15 @@ app.get('/', function(req, res) {
 //This is the page for people to upload their own custom maps
 app.get('/upload', function(req, res) {
   res.sendFile(__dirname + '/public/upload.html');
-})
+});
+
+app.get('/sources', function(req, res) {
+  fs.readFile('sourcelist.txt', 'utf8', function(err, data) {
+    if (err) throw err;
+    res.send(data);
+  });
+
+});
 
 //This is the post request to upload a file to mapbox
 //Reference Mapbox JS SDK on uploads

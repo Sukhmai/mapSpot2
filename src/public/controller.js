@@ -296,6 +296,40 @@ map.on('load', function() {
             'fill-opacity': 0.6
         }
     });
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "/sources");
+    xhr.send();
+
+
+    xhr.onreadystatechange = (e) => {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.responseText) {
+          let sourceList = xhr.responseText;
+          sourceList = sourceList.substring(0, sourceList.length - 2)
+          let sources = sourceList.split(',');
+          console.log(sources);
+          for (var i = 0; i < sources.length; i++) {
+            map.addLayer({
+              id: sources[i],
+              type: 'circle',
+              source: {
+                type: 'vector',
+                url: 'mapbox://atlmaproom.' + sources[i]
+              },
+              'source-layer': sources[i],
+              'paint': {
+                'circle-color': "blue"
+              }
+            });
+          }
+        }
+      }
+    }
+
+
+
+
   //Testing adding an image
   //We can add images in the same way we add layers, we just need a way to programmatically add layers/images
 //   map.addSource('test_image', {
