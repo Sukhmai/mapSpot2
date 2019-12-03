@@ -159,6 +159,7 @@ function lockMap() {
         isLocked = true;
        // console.log(isLocked);
         map.interactive = false;
+        document.getElementById("interactionButton").style.filter = "brightness(75%)";
 
     }
 
@@ -174,6 +175,7 @@ function lockMap() {
         map.doubleClickZoom.enable();
         map.touchZoomRotate.enable();
         isLocked = false;
+        document.getElementById("interactionButton").style.filter = "brightness(100%)";
     }
 }
 
