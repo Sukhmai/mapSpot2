@@ -14,7 +14,7 @@ const uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
 const AWS = require('aws-sdk');
 
 // Main server runs on this port, will be used by other scripts
-server.listen(8080);
+server.listen(8081);
 
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({

@@ -119,6 +119,7 @@ function dropDownSelect() {
             minZoom: 10,
             speed: 2.5
         });
+        document.getElementById('sls').style.visibility = 'hidden';
     }
     if (selectedCity === 'New Orleans') {
         map.flyTo({
@@ -127,6 +128,7 @@ function dropDownSelect() {
             minZoom: 10,
             speed: 2.5
         });
+        document.getElementById('sls').style.visibility = 'hidden';
     }
     if (selectedCity === 'Savannah') {
         map.flyTo({
@@ -135,6 +137,7 @@ function dropDownSelect() {
             minZoom: 10,
             speed: 2.5
         });
+        document.getElementById('sls').style.visibility = 'visible';
     }
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -296,6 +299,25 @@ map.on('load', function() {
             'fill-opacity': 0.6
         }
     });
+    //Sea Level Sensors
+    map.addSource('Sensor_Source', {
+      type: 'vector',
+      url: 'mapbox://atlmaproom.Sensors'
+    });
+    map.addLayer({
+      'id': 'Sea_Level_Sensors',
+      'type': 'circle',
+      'source': 'Sensor_Source',
+      'source-layer': 'Sensors',
+      'layout': {
+          'visibility': 'none'
+      },
+      'paint' : {
+        'circle-radius': 8,
+        'circle-color': '#9ffcd3',
+        'circle-opacity' : 0.75
+      }
+    });
   //Testing adding an image
   //We can add images in the same way we add layers, we just need a way to programmatically add layers/images
 //   map.addSource('test_image', {
@@ -378,6 +400,20 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
 
     var layers = document.getElementById('menu');
     layers.appendChild(link);
+}
+
+function toggleSensors() {
+  let visibility = map.getLayoutProperty('Sea_Level_Sensors', 'visibility');
+  let slsButton = document.getElementById('sls');
+  if (visibility === 'visible') {
+    map.setLayoutProperty('Sea_Level_Sensors', 'visibility', 'none');
+    slsButton.style.backgroundColor = '#ffffff';
+    slsButton.style.color = '#404040';
+  } else {
+    map.setLayoutProperty('Sea_Level_Sensors', 'visibility', 'visible');
+    slsButton.style.backgroundColor = '#2ECC71';
+    slsButton.style.color = '#ffffff';
+  }
 }
 
 // function createLegend() {
