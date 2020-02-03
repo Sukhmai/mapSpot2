@@ -316,9 +316,9 @@ map.on('load', function() {
           'visibility': 'none'
       },
       'paint' : {
-        'circle-radius': 8,
-        'circle-color': '#9ffcd3',
-        'circle-opacity' : 1
+        'circle-radius': 5,
+        'circle-color': '#4c95f5',
+        'circle-opacity' : 0.85
       }
     });
     map.addLayer({
@@ -339,7 +339,7 @@ map.on('load', function() {
             ]
         },
         'circle-stroke-width': 3,
-        'circle-stroke-color': '#ffffff'
+        'circle-stroke-color': '#4c95f5'
         }
     })
     map.addLayer({
@@ -360,7 +360,7 @@ map.on('load', function() {
             ]
         },
         'circle-stroke-width': 3,
-        'circle-stroke-color': 'red'
+        'circle-stroke-color': '#ffa930'
         }
     })
       map.addLayer({
@@ -371,9 +371,10 @@ map.on('load', function() {
       'layout': {
         'text-field': ['concat', ['to-string',['floor', ['/', ['-', Date.now() , ['get', 'install_time']], 2592000000]]], ' mo'],
         'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-        'text-offset': [4.5, 0],
+        'text-offset': [5, 0],
         'text-anchor': 'top',
-        'visibility' : 'none'
+        'visibility' : 'none',
+        'text-size' : 12
       },
       'paint': {
         'text-color': '#fff'
@@ -394,7 +395,7 @@ map.on('load', function() {
           'visibility': 'none'
       },
       'paint' : {
-        'circle-radius': 8,
+        'circle-radius': 5,
         'circle-color': '#ffd152',
         'circle-opacity' : 1
       }
