@@ -120,6 +120,7 @@ function dropDownSelect() {
             speed: 2.5
         });
         document.getElementById('sls').style.visibility = 'hidden';
+        document.getElementById('gateways').style.visibility = 'hidden';
     }
     if (selectedCity === 'New Orleans') {
         map.flyTo({
@@ -129,6 +130,7 @@ function dropDownSelect() {
             speed: 2.5
         });
         document.getElementById('sls').style.visibility = 'hidden';
+        document.getElementById('gateways').style.visibility = 'hidden';
     }
     if (selectedCity === 'Savannah') {
         map.flyTo({
@@ -138,6 +140,7 @@ function dropDownSelect() {
             speed: 2.5
         });
         document.getElementById('sls').style.visibility = 'visible';
+        document.getElementById('gateways').style.visibility = 'visible';
     }
 }
 /*--------------------------------------------------------------------------------------------------------------------*/
@@ -302,20 +305,98 @@ map.on('load', function() {
     //Sea Level Sensors
     map.addSource('Sensor_Source', {
       type: 'vector',
-      url: 'mapbox://atlmaproom.Sensors'
+      url: 'mapbox://atlmaproom.Sensors2'
     });
     map.addLayer({
       'id': 'Sea_Level_Sensors',
       'type': 'circle',
       'source': 'Sensor_Source',
-      'source-layer': 'Sensors',
+      'source-layer': 'Sensors2',
       'layout': {
           'visibility': 'none'
       },
       'paint' : {
         'circle-radius': 8,
         'circle-color': '#9ffcd3',
-        'circle-opacity' : 0.75
+        'circle-opacity' : 1
+      }
+    });
+    map.addLayer({
+      'id': 'InstallRings',
+      'type': 'circle',
+      'source': 'Sensor_Source',
+      'source-layer': 'Sensors2',
+      'layout': {
+          'visibility': 'none'
+      },
+      'paint': {
+        "circle-opacity": 0,
+        "circle-radius": {
+            property: 'install_time',
+            stops: [
+                [1546904750000, 45],
+                [1579135222000, 15]
+            ]
+        },
+        'circle-stroke-width': 3,
+        'circle-stroke-color': '#ffffff'
+        }
+    })
+    map.addLayer({
+      'id': 'CriticalRings',
+      'type': 'circle',
+      'source': 'Sensor_Source',
+      'source-layer': 'Sensors2',
+      'layout': {
+          'visibility': 'none'
+      },
+      'paint': {
+        "circle-opacity": 0,
+        "circle-radius": {
+            property: 'recent_max_time',
+            stops: [
+                [1546904750000, 45],
+                [1579135222000, 15]
+            ]
+        },
+        'circle-stroke-width': 3,
+        'circle-stroke-color': 'red'
+        }
+    })
+      map.addLayer({
+      'id': 'monthLabels',
+      'type': 'symbol',
+      'source': 'Sensor_Source',
+      'source-layer': 'Sensors2',
+      'layout': {
+        'text-field': ['concat', ['to-string',['floor', ['/', ['-', Date.now() , ['get', 'install_time']], 2592000000]]], ' mo'],
+        'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+        'text-offset': [4.5, 0],
+        'text-anchor': 'top',
+        'visibility' : 'none'
+      },
+      'paint': {
+        'text-color': '#fff'
+      }
+      });
+
+    //Gateways
+    map.addSource('Flood_Source', {
+      type: 'vector',
+      url: 'mapbox://atlmaproom.FloodLevels'
+    });
+    map.addLayer({
+      'id': 'Flood_Levels',
+      'type': 'circle',
+      'source': 'Flood_Source',
+      'source-layer': 'FloodLevels',
+      'layout': {
+          'visibility': 'none'
+      },
+      'paint' : {
+        'circle-radius': 8,
+        'circle-color': '#ffd152',
+        'circle-opacity' : 1
       }
     });
   //Testing adding an image
@@ -407,12 +488,32 @@ function toggleSensors() {
   let slsButton = document.getElementById('sls');
   if (visibility === 'visible') {
     map.setLayoutProperty('Sea_Level_Sensors', 'visibility', 'none');
+    map.setLayoutProperty('CriticalRings', 'visibility', 'none');
+    map.setLayoutProperty('InstallRings', 'visibility', 'none');
+    map.setLayoutProperty('monthLabels', 'visibility', 'none');
     slsButton.style.backgroundColor = '#ffffff';
     slsButton.style.color = '#404040';
   } else {
     map.setLayoutProperty('Sea_Level_Sensors', 'visibility', 'visible');
+    map.setLayoutProperty('CriticalRings', 'visibility', 'visible');
+    map.setLayoutProperty('InstallRings', 'visibility', 'visible');
+    map.setLayoutProperty('monthLabels', 'visibility', 'visible');
     slsButton.style.backgroundColor = '#2ECC71';
     slsButton.style.color = '#ffffff';
+  }
+}
+
+function toggleGateways() {
+  let visibility = map.getLayoutProperty('Flood_Levels', 'visibility');
+  let gateways = document.getElementById('gateways');
+  if (visibility === 'visible') {
+    map.setLayoutProperty('Flood_Levels', 'visibility', 'none');
+    gateways.style.backgroundColor = '#ffffff';
+    gateways.style.color = '#404040';
+  } else {
+    map.setLayoutProperty('Flood_Levels', 'visibility', 'visible');
+    gateways.style.backgroundColor = '#2ECC71';
+    gateways.style.color = '#ffffff';
   }
 }
 
