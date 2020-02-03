@@ -371,7 +371,7 @@ map.on('load', function() {
       'layout': {
         'text-field': ['concat', ['to-string',['floor', ['/', ['-', Date.now() , ['get', 'install_time']], 2592000000]]], ' mo'],
         'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-        'text-offset': [5, 0],
+        'text-offset': [5.5, 0],
         'text-anchor': 'top',
         'visibility' : 'none',
         'text-size' : 12
