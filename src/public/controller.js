@@ -377,7 +377,7 @@ map.on('load', function() {
         'text-size' : 12
       },
       'paint': {
-        'text-color': '#fff'
+        'text-color': '#4c95f5'
       }
       });
 
