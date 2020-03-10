@@ -10,7 +10,9 @@ var server = http.createServer(app);
 
 require('dotenv').config();
 const mbxUpload = require('@mapbox/mapbox-sdk/services/uploads');
-const uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
+if (process.env.uploadKey) {
+  const uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
+}
 const AWS = require('aws-sdk');
 
 // Main server runs on this port, will be used by other scripts

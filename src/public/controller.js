@@ -1,3 +1,5 @@
+import {createInnudationLayers} from './innudation.js';
+
 // Global Variables
 var rectWidth = 730;
 var rectHeight = 200;
@@ -382,14 +384,14 @@ map.on('load', function() {
       });
 
     //Gateways
-    map.addSource('Flood_Source', {
+    map.addSource('Gateway_Source', {
       type: 'vector',
       url: 'mapbox://atlmaproom.FloodLevels'
     });
     map.addLayer({
       'id': 'Flood_Levels',
       'type': 'circle',
-      'source': 'Flood_Source',
+      'source': 'Gateway_Source',
       'source-layer': 'FloodLevels',
       'layout': {
           'visibility': 'none'
@@ -400,6 +402,9 @@ map.on('load', function() {
         'circle-opacity' : 1
       }
     });
+
+    //Innudation Levels
+    createInnudationLayers(map);
   //Testing adding an image
   //We can add images in the same way we add layers, we just need a way to programmatically add layers/images
 //   map.addSource('test_image', {
