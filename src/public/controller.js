@@ -67,6 +67,10 @@ map.on('load', function() {
     }, true);
 });
 
+function updateSlider(slideAmount) {
+    var sliderDiv = document.getElementById("range-value");
+    sliderDiv.innerHTML = slideAmount;
+}
 
 function getPixelCoordinates() {
     // get width & height from current rectangle
@@ -405,6 +409,7 @@ map.on('load', function() {
 
     //Innudation Levels
     createInnudationLayers(map);
+
   //Testing adding an image
   //We can add images in the same way we add layers, we just need a way to programmatically add layers/images
 //   map.addSource('test_image', {
@@ -635,3 +640,12 @@ map.on('mouseenter', 'Percent White Occupancy', function() {
 map.on('mouseleave', 'Percent White Occupancy', function() {
     map.getCanvas().style.cursor = '';
 });
+
+let floodSlider = document.getElementsByClassName('input-range')[0];
+let floodValue = document.getElementsByClassName('range-value')[0];
+
+floodSlider.onchange = handlefloodSliderChange;
+
+function handlefloodSliderChange(e) {
+    floodValue.innerHTML = e.target.value;
+}
