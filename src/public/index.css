@@ -32,6 +32,12 @@ input::-moz-focus-inner {
   border: 0; 
 }
 
+.range-value {
+    color: #208ba1;
+    font-size: 32px;
+    font-family: fantasy;
+}
+
 
 
 #interactionButton {
