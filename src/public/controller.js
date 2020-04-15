@@ -1,25 +1,26 @@
-// Global Variables
-var rectWidth = 730;
-var rectHeight = 200;
-var leftLong, rightLong, lowerLat, upperLat
-var curBearing = 0
-var curZoom = 1
-var curCenter = [1, 1]
-var curGeoCoords, curActiveRectangle, curEndCenters
+// Global letiables
+let rectWidth = 730;
+let rectHeight = 200;
+let leftLong, rightLong, lowerLat, upperLat
+let curBearing = 0
+let curZoom = 1
+let curCenter = [1, 1]
+let curGeoCoords, curActiveRectangle, curEndCenters
     //City Coordinates
     //     // Atlanta:
-    // var ATLleftCenter = { lng: -84.3880, lat: 33.7490 }
-    // var ATLrightCenter = { lng: -82.3880, lat: 33.7490 }
+    // let ATLleftCenter = { lng: -84.3880, lat: 33.7490 }
+    // let ATLrightCenter = { lng: -82.3880, lat: 33.7490 }
     // NOLA
-var leftCenter = { lng: -90.0715, lat: 29.9511 }
-var rightCenter = { lng: -90.0715, lat: 29.9511 }
-var rc, lc
-var currentPoints = null;
-var projRatio = 0.5
-var zoomAdd = 2.75
+let leftCenter = { lng: -90.0715, lat: 29.9511 }
+let rightCenter = { lng: -90.0715, lat: 29.9511 }
+let rc, lc
+let currentPoints = null;
+let projRatio = 0.5
+let zoomAdd = 2.75
 
-var isLocked = false
-var selectedCity;
+let isLocked = false
+let selectedCity;
+let style = 0;
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -38,7 +39,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXRsbWFwcm9vbSIsImEiOiJjamtiZzJ6dGIybTBkM3dwY
 /**
  * creates the MapBox GL map with initial parameters
  */
-var map = new mapboxgl.Map({
+let map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/atlmaproom/cjkbg9s6m8njm2roxkx8gprzj', // style from online MapBox GL Studio
     zoom: 12,
@@ -66,7 +67,7 @@ map.on('load', function() {
 });
 
 function updateSlider(slideAmount) {
-    var sliderDiv = document.getElementById("range-value");
+    let sliderDiv = document.getElementById("range-value");
     sliderDiv.innerHTML = slideAmount;
 }
 
@@ -75,39 +76,39 @@ function getPixelCoordinates() {
     width = rectWidth;
     height = rectHeight;
     // get map center in pixel coordinates
-    var center = map.project(map.getCenter());
+    let center = map.project(map.getCenter());
     // calculate pixel coordinates of corners
-    var ur = { "x": (center.x + width / 2), "y": (center.y - height / 2) }; // upper right
-    var ul = { "x": (center.x - width / 2), "y": (center.y - height / 2) }; // upper left
-    var br = { "x": (center.x + width / 2), "y": (center.y + height / 2) }; // bottom right
-    var bl = { "x": (center.x - width / 2), "y": (center.y + height / 2) }; // bottom left
+    let ur = { "x": (center.x + width / 2), "y": (center.y - height / 2) }; // upper right
+    let ul = { "x": (center.x - width / 2), "y": (center.y - height / 2) }; // upper left
+    let br = { "x": (center.x + width / 2), "y": (center.y + height / 2) }; // bottom right
+    let bl = { "x": (center.x - width / 2), "y": (center.y + height / 2) }; // bottom left
     // return an json of pixel coordinates
     return { "ur": ur, "ul": ul, "br": br, "bl": bl };
 }
 
 function getGeoCoordinates() {
     // grab pixel coordinates from helper method
-    var pixelCoordinates = getPixelCoordinates();
+    let pixelCoordinates = getPixelCoordinates();
     // unproject to geographic coordinates
-    var ur = map.unproject(pixelCoordinates.ur);
-    var ul = map.unproject(pixelCoordinates.ul);
-    var br = map.unproject(pixelCoordinates.br);
-    var bl = map.unproject(pixelCoordinates.bl);
+    let ur = map.unproject(pixelCoordinates.ur);
+    let ul = map.unproject(pixelCoordinates.ul);
+    let br = map.unproject(pixelCoordinates.br);
+    let bl = map.unproject(pixelCoordinates.bl);
     // return a json of geographic coordinates
     return { "ur": ur, "ul": ul, "br": br, "bl": bl };
 }
 
 function getEndCenters() {
-    var height = rectHeight;
+    let height = rectHeight;
     // get upper right & upper left pixels
-    var pixelCoordinates = getPixelCoordinates();
-    var ur = pixelCoordinates.ur;
-    var ul = pixelCoordinates.ul;
+    let pixelCoordinates = getPixelCoordinates();
+    let ur = pixelCoordinates.ur;
+    let ul = pixelCoordinates.ul;
     // calculate pixel coordinates for right & left center
-    var rcPixel = { "x": (ur.x - height / 2), "y": (ur.y + height / 2) };
-    var lcPixel = { "x": (ul.x + height / 2), "y": (ul.y + height / 2) };
-    var rc = map.unproject(rcPixel);
-    var lc = map.unproject(lcPixel);
+    let rcPixel = { "x": (ur.x - height / 2), "y": (ur.y + height / 2) };
+    let lcPixel = { "x": (ul.x + height / 2), "y": (ul.y + height / 2) };
+    let rc = map.unproject(rcPixel);
+    let lc = map.unproject(lcPixel);
     // return a json of geographic coordinates
     return { "rc": rc, "lc": lc };
 }
@@ -224,10 +225,10 @@ function createInnudationLayers(map) {
  * and then adds the layers to the map to be toggled
  */
 map.on('load', function() {
-    var nav = new mapboxgl.NavigationControl({
+    let nav = new mapboxgl.NavigationControl({
         showCompass: true
     });
-    var scale = new mapboxgl.ScaleControl({
+    let scale = new mapboxgl.ScaleControl({
         maxWidth: 80,
         unit: 'imperial'
     });
@@ -487,24 +488,24 @@ map.on('load', function() {
 /**
  * link layers to buttons to toggle on screen
  */
-var toggleableLayerIds = ['Median Income', 'Percent College Educated', 'Percent White Occupancy'];
+let toggleableLayerIds = ['Median Income', 'Percent College Educated', 'Percent White Occupancy'];
 
-for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
-    var link = document.createElement('a');
+for (let i = 0; i < toggleableLayerIds.length; i++) {
+    let id = toggleableLayerIds[i];
+    let link = document.createElement('a');
     link.href = '#';
     link.textContent = id;
     link.onclick = function(e) {
-        var clickedLayer = this.textContent;
+        let clickedLayer = this.textContent;
         e.preventDefault();
         e.stopPropagation();
-        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+        let visibility = map.getLayoutProperty(clickedLayer, 'visibility');
         if (visibility === 'visible') {
             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
             this.className = '';
         } else {
             // hide all layers
-            var activeItem = document.getElementsByClassName('active');
+            let activeItem = document.getElementsByClassName('active');
             if (activeItem[0]) {
                 activeItem[0].classList.remove('active');
             }
@@ -517,7 +518,7 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
         }
     };
 
-    var layers = document.getElementById('menu');
+    let layers = document.getElementById('menu');
     layers.appendChild(link);
 }
 
@@ -557,20 +558,20 @@ function toggleGateways() {
 
 // function createLegend() {
 //     // Create the legend and display on the map
-//     var legend = document.createElement('div');
+//     let legend = document.createElement('div');
 //     legend.id = 'ts-map-legend';
 
-//     //plug in vars for each slot replace as needed
-//     var tsMapLegendTxtSlot1 = '&gt; 100k';
-//     var tsMapLegendTxtSlot2 = '99k-80k';
-//     var tsMapLegendTxtSlot3 = '79k-60k';
+//     //plug in lets for each slot replace as needed
+//     let tsMapLegendTxtSlot1 = '&gt; 100k';
+//     let tsMapLegendTxtSlot2 = '99k-80k';
+//     let tsMapLegendTxtSlot3 = '79k-60k';
 
-//     var tsMapLegendSlot1Color = '#f14b3e';
-//     var tsMapLegendSlot2Color = '#f18c3e';
-//     var tsMapLegendSlot3Color = '#f5c155';
+//     let tsMapLegendSlot1Color = '#f14b3e';
+//     let tsMapLegendSlot2Color = '#f18c3e';
+//     let tsMapLegendSlot3Color = '#f5c155';
 
-//     //assemble html and place in var
-//     var content = [];
+//     //assemble html and place in let
+//     let content = [];
 //     content.push('<h3 class="ts-map-legend-headline">Legend</h3>');
 //     content.push('<p><div class="ts-map-legend-color ts-map-legend-color-red"></div>' + tsMapLegendTxtSlot1 + '</p>');
 //     content.push('<p><div class="ts-map-legend-color ts-map-legend-color-orange"></div>' + tsMapLegendTxtSlot2 + '</p>');
@@ -586,16 +587,16 @@ function toggleGateways() {
 // When a click event occurs on a tract in the median income layer, open a popup at the
 // location of the tract, with description HTML from its properties.
 map.on('click', 'Median Income', function(e) {
-    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    let popUps = document.getElementsByClassName('mapboxgl-popup');
     // Check if there is already a popup on the map and if so, remove it
     if (popUps[0]) popUps[0].remove();
 
-    var coordinates = e.lngLat;
-    var tract = e.features[0].properties.NAMELSAD;
-    var description = e.features[0].properties.MedIncome;
+    let coordinates = e.lngLat;
+    let tract = e.features[0].properties.NAMELSAD;
+    let description = e.features[0].properties.MedIncome;
     description = formatter.format(description);
 
-    var popup = new mapboxgl.Popup()
+    let popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML('<h3>Median Income</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '</h4>' + '<h6>Georgia Median:   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $52,977<br>Louisiana Median:    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $46,710<br>United States Median: $57,652</h6>')
         .addTo(map);
@@ -616,15 +617,15 @@ map.on('mouseleave', 'Median Income', function() {
 // When a click event occurs on a tract in the percent college educated layer, open a popup at the
 // location of the tract, with description HTML from its properties.
 map.on('click', 'Percent College Educated', function(e) {
-    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    let popUps = document.getElementsByClassName('mapboxgl-popup');
     // Check if there is already a popup on the map and if so, remove it
     if (popUps[0]) popUps[0].remove();
 
-    var coordinates = e.lngLat;
-    var tract = e.features[0].properties.NAMELSAD;
-    var description = e.features[0].properties.PctBachorH;
+    let coordinates = e.lngLat;
+    let tract = e.features[0].properties.NAMELSAD;
+    let description = e.features[0].properties.PctBachorH;
 
-    var popup = new mapboxgl.Popup()
+    let popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML('<h3>Percent College Educated</h3>' + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;29.9%<br>Louisiana:&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;23.4%<br>United States: &nbsp;30.9%</h6>')
         .addTo(map);
@@ -644,15 +645,15 @@ map.on('mouseleave', 'Percent College Educated', function() {
 // When a click event occurs on a tract in the percent White Occupancy layer, open a popup at the
 // location of the tract, with description HTML from its properties.
 map.on('click', 'Percent White Occupancy', function(e) {
-    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    let popUps = document.getElementsByClassName('mapboxgl-popup');
     // Check if there is already a popup on the map and if so, remove it
     if (popUps[0]) popUps[0].remove();
 
-    var coordinates = e.lngLat;
-    var tract = e.features[0].properties.NAMELSAD;
-    var description = e.features[0].properties.White_pop;
+    let coordinates = e.lngLat;
+    let tract = e.features[0].properties.NAMELSAD;
+    let description = e.features[0].properties.White_pop;
 
-    var popup = new mapboxgl.Popup()
+    let popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML(`<h3>Percent White Occupancy</h3>` + '<h5>' + tract + ':' + '</h5>' + '<h4>' + description + '%' + '</h4>' + '<h6>Georgia: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 59.7%<br>Louisiana: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 62.6%<br>United States: &nbsp; 72.4%</h6>')
         .addTo(map);
@@ -678,4 +679,15 @@ function handlefloodSliderChange(e) {
     map.setLayoutProperty(currentValue + "ft_flood", 'visibility', 'none');
     floodValue.innerHTML = e.target.value + " ft";
     map.setLayoutProperty(e.target.value + "ft_flood", 'visibility', 'visible');
+}
+
+function toggleSatellite() {
+    if (style === 0) {
+        map.setStyle('mapbox://styles/mapbox/satellite-v9');
+        style = 1;
+    } else {
+        map.setStyle('mapbox://styles/atlmaproom/cjkbg9s6m8njm2roxkx8gprzj');
+        style = 0;
+    }
+    
 }

@@ -1,12 +1,12 @@
 // Define server and plugins
-var fs = require('fs');
-var express = require('express');
-var app = express();
-var http = require('http');
-var bodyParser = require('body-parser');
-var multer = require('multer');
-var upload = multer();
-var server = http.createServer(app);
+let fs = require('fs');
+let express = require('express');
+let app = express();
+let http = require('http');
+let bodyParser = require('body-parser');
+let multer = require('multer');
+let upload = multer();
+let server = http.createServer(app);
 
 require('dotenv').config();
 const mbxUpload = require('@mapbox/mapbox-sdk/services/uploads');
