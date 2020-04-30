@@ -10,8 +10,9 @@ let server = http.createServer(app);
 
 require('dotenv').config();
 const mbxUpload = require('@mapbox/mapbox-sdk/services/uploads');
+let uploadsClient;
 if (process.env.uploadKey) {
-  const uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
+  uploadsClient = mbxUpload({ accessToken: process.env.uploadKey });
 }
 const AWS = require('aws-sdk');
 
